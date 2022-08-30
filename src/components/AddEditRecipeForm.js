@@ -1,6 +1,24 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-const AddEditRecipeForm = ({ handleAddRecipe }) => {
+const AddEditRecipeForm = ({
+  existingRecipe,
+  handleAddRecipe,
+  handleUpdateRecipe,
+  handleDeleteRecipe,
+  handleEditRecipeCancel,
+}) => {
+  useEffect(() => {
+    if (existingRecipe) {
+      setName(existingRecipe.name);
+      setCategory(existingRecipe.category);
+      setPublishDate(existingRecipe.publishDate.toISOString().split('T')[0]);
+      setDirections(existingRecipe.directions);
+      setIngredients(existingRecipe.ingredients);
+    } else {
+      resetForm();
+    }
+  }, [existingRecipe]);
+
   const [name, setName] = useState('');
   const [category, setCategory] = useState('');
   const [publishDate, setPublishDate] = useState(
@@ -25,8 +43,12 @@ const AddEditRecipeForm = ({ handleAddRecipe }) => {
       isPublished,
       ingredients,
     };
-    console.log('newRecipe is', newRecipe);
-    handleAddRecipe(newRecipe);
+    if (existingRecipe) {
+      handleUpdateRecipe(newRecipe, existingRecipe.id);
+    } else {
+      handleAddRecipe(newRecipe);
+    }
+    resetForm();
   }
 
   function handleAddIngredient(e) {
@@ -42,12 +64,20 @@ const AddEditRecipeForm = ({ handleAddRecipe }) => {
     setIngredientName('');
   }
 
+  function resetForm() {
+    setName('');
+    setCategory('');
+    setPublishDate('');
+    setDirections('');
+    setIngredients([]);
+  }
+
   return (
     <form
       onSubmit={handleRecipeFormSubmit}
       className="add-edit-recipe-form-container"
     >
-      <h2>Add a New Recipe</h2>
+      {existingRecipe ? <h2>Update Recipe</h2> : <h2>Add a New Recipe</h2>}
       <div className="top-form-section">
         <div className="fields">
           <label className="recipe-label input-label">
@@ -69,15 +99,16 @@ const AddEditRecipeForm = ({ handleAddRecipe }) => {
               required
             >
               <option value=""></option>
+              <option value="eggsAndBreakfast">Eggs & Breakfast</option>
               <option value="breadsSandwichesAndPizza">
                 Breads, Sandwiches, and Pizza
               </option>
-              <option value="eggsAndBreakfast">Eggs & Breakfast</option>
+              <option value="fishAndSeafood">Fish & Seafood</option>
+              <option value="meatAndPoultry">Meat & Poultry</option>
+              <option value="vegetarianDishes">Vegetarian Dishes</option>
               <option value="dessertsAndBakedGoods">
                 Desserts & Baked Goods
               </option>
-              <option value="fishAndSeafood">Fish & Seafood</option>
-              <option value="vegetables">Vegetables</option>
             </select>
           </label>
           <label className="recipe-label input-label">
@@ -158,8 +189,26 @@ const AddEditRecipeForm = ({ handleAddRecipe }) => {
       </div>
       <div className="action-buttons">
         <button type="submit" className="primary-button action-button">
-          Create Recipe
+          {existingRecipe ? 'Update Recipe' : 'Create Recipe'}
         </button>
+        {existingRecipe ? (
+          <>
+            <button
+              type="button"
+              onClick={handleEditRecipeCancel}
+              className="primary-button action-button"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={() => handleDeleteRecipe(existingRecipe.id)}
+              className="primary-button action-button"
+            >
+              Delete
+            </button>
+          </>
+        ) : null}
       </div>
     </form>
   );

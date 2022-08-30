@@ -74,6 +74,7 @@ html {
   font-weight: bold;
   text-align: center;
   color: #4c4c4c;
+  text-transform: uppercase;
 }
 .App .main .recipe-list .recipe-card .recipe-name {
   font-size: 2rem;
