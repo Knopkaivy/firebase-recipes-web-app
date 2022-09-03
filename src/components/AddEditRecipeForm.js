@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import ImageUploadPreview from './ImageUploadPreview';
 
 const AddEditRecipeForm = ({
   existingRecipe,
@@ -14,6 +15,7 @@ const AddEditRecipeForm = ({
       setPublishDate(existingRecipe.publishDate.toISOString().split('T')[0]);
       setDirections(existingRecipe.directions);
       setIngredients(existingRecipe.ingredients);
+      setImageUrl(existingRecipe.imageUrl);
     } else {
       resetForm();
     }
@@ -27,6 +29,7 @@ const AddEditRecipeForm = ({
   const [directions, setDirections] = useState('');
   const [ingredients, setIngredients] = useState([]);
   const [ingredientName, setIngredientName] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
 
   function handleRecipeFormSubmit(e) {
     e.preventDefault();
@@ -42,7 +45,12 @@ const AddEditRecipeForm = ({
       publishDate: new Date(publishDate),
       isPublished,
       ingredients,
+      imageUrl,
     };
+    if (!imageUrl) {
+      alert('Recipe image is yet to be added');
+      return;
+    }
     if (existingRecipe) {
       handleUpdateRecipe(newRecipe, existingRecipe.id);
     } else {
@@ -70,6 +78,7 @@ const AddEditRecipeForm = ({
     setPublishDate('');
     setDirections('');
     setIngredients([]);
+    setImageUrl('');
   }
 
   return (
@@ -79,6 +88,15 @@ const AddEditRecipeForm = ({
     >
       {existingRecipe ? <h2>Update Recipe</h2> : <h2>Add a New Recipe</h2>}
       <div className="top-form-section">
+        <div className="image-input-box">
+          Recipe Image
+          <ImageUploadPreview
+            basePath="recipes"
+            existingImageUrl={imageUrl}
+            handleUploadFinish={(downloadUrl) => setImageUrl(downloadUrl)}
+            handleUploadCancel={() => setImageUrl('')}
+          ></ImageUploadPreview>
+        </div>
         <div className="fields">
           <label className="recipe-label input-label">
             Recipe Name:

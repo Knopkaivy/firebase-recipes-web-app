@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import FirebaseAuthService from './FirebaseAuthService';
 import LoginForm from './components/LoginForm';
 import AddEditRecipeForm from './components/AddEditRecipeForm';
@@ -268,6 +268,15 @@ function App() {
                         <div className="unpublished">Unpublished</div>
                       ) : null}
                       <div className="recipe-name">{recipe.name}</div>
+                      <div className="recipe-image-box">
+                        {recipe.imageUrl ? (
+                          <img
+                            src={recipe.imageUrl}
+                            alt={recipe.name}
+                            className="recipe-image"
+                          />
+                        ) : null}
+                      </div>
                       <div className="recipe-field">
                         Category: {lookupCategoryLabel(recipe.category)}
                       </div>
