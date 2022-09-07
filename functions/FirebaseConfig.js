@@ -1,9 +1,10 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
-const serviceAccount = require('./firebaseServiceAccount.json');
+const serviceAccount = require(process.env
+  .REACT_APP_FIREBASE_SERVICE_ACCOUNT_KEY_PATH);
+// const serviceAccount = require('./firebaseServiceAccount.json');
 
 const FIREBASE_STORAGE_BUCKET = 'fir-recipes-7a9d7.appspot.com';
-
 const firebase_params = {
   type: serviceAccount.type,
   projectId: serviceAccount.project_id,
@@ -20,7 +21,7 @@ const firebase_params = {
 const apiFirebaseOptions = {
   ...functions.config().firebase,
   // credential: admin.credential.applicationDefault(),
-  credential: admin.credential.cert(serviceAccount),
+  credential: admin.credential.cert(firebase_params),
   projectId: 'fir-recipes-7a9d7',
 };
 admin.initializeApp(apiFirebaseOptions);
