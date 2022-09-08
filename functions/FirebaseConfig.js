@@ -1,6 +1,5 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
-const serviceAccount = require('./firebaseServiceAccount.json');
 
 const FIREBASE_STORAGE_BUCKET = 'fir-recipes-7a9d7.appspot.com';
 
